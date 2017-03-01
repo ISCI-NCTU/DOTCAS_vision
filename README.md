@@ -1,16 +1,16 @@
-# kinects_human_tracking
+# Dynamic Object Tracking
 
 #### Build status
 [![Build Status](https://travis-ci.org/kuka-isir/kinects_human_tracking.svg?branch=master)](https://travis-ci.org/kuka-isir/kinects_human_tracking)
 
-This package is meant to be used for tracking a humans carrying stuff and moving around a robot. We strongly recommend to use several RGBD-sensors, "kinects", (mainly to deal with occlusion from the robot) but this package can be used with a single sensor.
-Obviously all the sensors intrinsics and extrinsics need to be properly calibrated.
-First, for all kinects, we remove the robot from the pointcloud so we won't be tracking the robot moving around instead of humans.
-Secondly, the static background is then removed by substracting a photo of the current view without any humans in it.
-Then I create a pointcloud for each background&robot-subtracted depth image, downsample the resulting pointClouds and merge all these points together in a single cloud.
-Finally, we create clusters from the merged pointCloud and use only the closest cluster to the robot.
+## Introduction
+- This package was originally based on [kinects_human_tracking](https://github.com/kuka-isir/kinects_human_tracking) develop by [JimmyDaSilva](https://github.com/JimmyDaSilva), Perception research engineer at ISIR, Paris
 
-So the different steps are:
+- Maintainer : [Howard Chen](https://github.com/s880367), Robotic vision researcher, NCTU-ISCI, Taiwan 
+
+- This package is meant to be used for tracking a humans carrying stuff and moving around a robot. We strongly recommend to use several RGBD-sensors, "kinects", (mainly to deal with occlusion from the robot) but this package can be used with a single sensor. Obviously all the sensors intrinsics and extrinsics need to be properly calibrated. First, for all kinects, we remove the robot from the pointcloud so we won't be tracking the robot moving around instead of humans. Secondly, the static background is then removed by substracting a photo of the current view without any humans in it. Then I create a pointcloud for each background&robot-subtracted depth image, downsample the resulting pointClouds and merge all these points together in a single cloud. Finally, we create clusters from the merged pointCloud and use only the closest cluster to the robot.
+
+**So the different steps are:**
   - run the robot
   - run the RGBD-sensors
   - publish the extrinsics (camera position) of each sensors
@@ -24,11 +24,10 @@ So the different steps are:
   - apply rules to the clusters to find out which ones are humans (optional)
   - run tracking (only kalman filter for now)
 
-Short video to explain what it is possible to do with this piece of code:
-
-https://www.youtube.com/watch?v=kc1JB106Xrc
 
 ## TODOs
+- Adopt other clustering algorithm 
+- Adopt other point lcoud merging algorithm 
 - Allow the use of a particle filter
 - Add more rules to detect humans
 - Improve even more the code by using nodelets
@@ -36,7 +35,7 @@ https://www.youtube.com/watch?v=kc1JB106Xrc
 ## Requirements
 - The kinect intrinsics and extrinsics need to be calibrated properly.
 - You probably can't run more than 2 Kinects on the same computer without losing FPS in the end. (I am running 2 with 30FPS!)
-- You will need the realtime_urdf_filter package with a few adjustments: https://github.com/JimmyDaSilva/realtime_urdf_filter.git (Use branch indigo-devel)
+- You will need the realtime_urdf_filter package with a few adjustments: https://github.com/JimmyDaSilva/realtime_urdf_filter.git (Use branch current_settings for kinectV2)
 - The realtime URDF filter uses OpenGL, therefore a GPU
 
 ## Instructions
@@ -61,14 +60,10 @@ roslaunch kinects_human_tracking closest_pt_tracking.launch
 
 ## Nodes description
 #### Kinects
-![kinect-color](https://googledrive.com/host/0B61-Kf77E1hUYU9IUmxzSTJIWEE)
-
-![kinect-depth](https://googledrive.com/host/0B61-Kf77E1hUQU5vTXZnX0sxa1E)
-
 You need to run the calibrated Kinects you want to use and publish their kinect_link frame. 
 You can use the `kinect1.launch` and `kinect1_extrinsics.launch` to help you running Kinect devices with openni_launch.
 #### Realtime URDF filtering
-![urdf_filter](https://googledrive.com/host/0B61-Kf77E1hUSk5xSkYzYVhaRVk)
+
 ```
 roslaunch realtime_urdf_filter filter.launch
 ```
@@ -95,10 +90,6 @@ roslaunch kinects_human_tracking kinect_img_bg_store.launch
 This node creates a minimum background and makes it available for other node via a ROS service
 
 #### Background substraction
-
-![color](https://googledrive.com/host/0B61-Kf77E1hUdW9ya0E5TTVVT3c)
-
-![bg_sub](https://googledrive.com/host/0B61-Kf77E1hUZ0VFYkhZdktGUFE)
 ```
 roslaunch kinects_human_tracking kinect_img_bg_sub.launch
 ```
@@ -113,7 +104,6 @@ This node substract the saved depth background image from the current depth imag
 
 
 #### Cloudification
-![cloud](https://googledrive.com/host/0B61-Kf77E1hUa3RaSGwtMXNYWWs)
 ```
 roslaunch kinects_human_tracking create_pc.launch
 ```
@@ -136,9 +126,8 @@ roslaunch kinects_human_tracking kinect_merge.launch
 This node will just transform the pointClouds into the `out_frame` and then sum all the points into a unique cloud
 
 #### Tracking of the closest cluster
-![tracking](https://googledrive.com/host/0B61-Kf77E1hUZnhOcUxMTnFtYzg)
 ```
-roslaunch kinects_human_tracking kinect_human_tracking.launch
+roslaunch kinects_human_tracking closest_pt_tracking.launch
 ```
 ###### Arguments
 - *kinect_topic_name* (string, default: kinect_merge) 
@@ -206,6 +195,4 @@ Here is what happens in the pointCloud processing:
 - Looks for the point in this cluster that is the closest to the end-effector
 - Feed the Kalman filter with the observation and get the resulting estimate of the closest point's position and velocity
 
-> Author : Jimmy Da Silva, jimmy.dasilva AT isir.upmc.fr
 
-> Contributor : Shray Bansal, shray.bansal AT gmail.com 
