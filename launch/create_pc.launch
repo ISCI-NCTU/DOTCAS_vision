@@ -12,8 +12,8 @@
 		   args="load depth_image_proc/point_cloud_xyzrgb $(arg kinect_name)_record_player_manager" output="screen">
 		<remap from="depth_registered/image_rect" to="$(arg kinect_name)/background_sub"/>
 		<remap from="depth_registered/points" to="$(arg kinect_name)/depth_registered/filtered_points"/>
-		<remap from="rgb/image_rect_color" to="$(arg kinect_name)/rgb/image_rect_color"/>
-		<remap from="rgb/camera_info" to="$(arg kinect_name)/rgb/camera_info"/>
+		<remap from="rgb/image_rect_color" to="$(arg kinect_name)/sd/image_color_rect"/>
+		<remap from="rgb/camera_info" to="$(arg kinect_name)/sd/camera_info"/>
 	</node>
 
   <!-- Nodelet to clean NaNs and downsample the pointcloud  	-->
