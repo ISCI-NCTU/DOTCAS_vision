@@ -38,24 +38,19 @@
 - You will need the realtime_urdf_filter package with a few adjustments: https://github.com/JimmyDaSilva/realtime_urdf_filter.git (Use branch current_settings for kinectV2)
 - The realtime URDF filter uses OpenGL, therefore a GPU
 
-## Instructions
+## Instructions(This instructions are executing under kinectV2)
 ```
 roslaunch lwr_description lwr_test.launch (or another robot)
-roslaunch kinects_human_tracking kinect1.launch
-roslaunch kinects_human_tracking kinect2.launch
-roslaunch kinects_human_tracking kinect1_extrinsics.launch
-roslaunch kinects_human_tracking kinect2_extrinsics.launch
+roslaunch kinects_human_tracking kinectV2.launch
+roslaunch kinects_human_tracking kinectV2_extrinsics.launch
 roslaunch realtime_urdf_filter filter.launch kinect_name:=kinect1
 roslaunch realtime_urdf_filter filter.launch kinect_name:=kinect2
-roslaunch kinects_human_tracking kinect_img_bg_store.launch kinect_name:=kinect1
-roslaunch kinects_human_tracking kinect_img_bg_store.launch kinect_name:=kinect2
-roslaunch kinects_human_tracking kinect_img_bg_sub.launch kinect_name:=kinect1
-roslaunch kinects_human_tracking kinect_img_bg_sub.launch kinect_name:=kinect2
-roslaunch kinects_human_tracking create_pc.launch kinect_name:=kinect1
-roslaunch kinects_human_tracking create_pc.launch kinect_name:=kinect2
-roslaunch kinects_human_tracking kinect_merge.launch topic_name1:=/kinect1/depth_registered/downsampled_filtered_points topic_name2:=/kinect2/depth_registered/downsampled_filtered_points
-(or roslaunch kinects_human_tracking kinect_merge.launch topic_name1:=/kinect1/depth_registered/downsampled_filtered_points  if using only one kinect)
-roslaunch kinects_human_tracking closest_pt_tracking.launch
+roslaunch kinects_human_tracking kinect_img_bg_store_kinectV2.launch kinect_name:=kinectV2
+roslaunch kinects_human_tracking kinect_img_bg_sub_kinectV2.launch kinect_name:=kinectV2
+roslaunch kinects_human_tracking create_pc.launch kinect_name:=kinectV2
+roslaunch kinects_human_tracking kinect_merge.launch topic_name1:=/kinectV2/depth_registered/downsampled_filtered_points topic_name2:=/kinect2/depth_registered/downsampled_filtered_points
+(or roslaunch kinects_human_tracking kinect_merge.launch topic_name1:=/kinectV2/depth_registered/downsampled_filtered_points  if using only one kinect)
+roslaunch kinects_human_tracking closest_pt_tracking.launch end_eff_frame:=base_link (this will assign the robot end-effector frame)
 ```
 
 ## Nodes description
