@@ -174,8 +174,8 @@ void callback(const PCMsg::ConstPtr& kinect_pc_msg)
         ROS_INFO("z = %f\n", last_cluster_pt_.point.z);
 
         float Vec_X = last_cluster_pt_.point.x;
-        float Vec_Y = last_cluster_pt_.point.y + 0.22;
-        float Vec_Z = last_cluster_pt_.point.z - 0.9;
+        float Vec_Y = last_cluster_pt_.point.y + 0.237;
+        float Vec_Z = last_cluster_pt_.point.z - 0.892;
 
         float Distance = sqrt(Vec_X*Vec_X + Vec_Y*Vec_Y + Vec_Z*Vec_Z);
         ROS_INFO("Distance = %f",Distance);
